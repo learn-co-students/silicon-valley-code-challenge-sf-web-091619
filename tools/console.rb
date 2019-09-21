@@ -7,5 +7,9 @@ end
 # This is a convenient place to define variables and/or set up new object instances,
 # so they will be available to test and play around with in your console
 
+ts = Startup.new("Flatiron", "Norris", "tech")
+tv = VentureCapitalist.new("Norris", 15)
+tf = FundingRound.new("Flatiron", "Elaf")
+
 binding.pry
 0 #leave this here to ensure binding.pry isn't the last line
