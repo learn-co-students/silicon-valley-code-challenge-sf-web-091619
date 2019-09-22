@@ -20,4 +20,41 @@ class VentureCapitalist
         end 
     end
 
+    # Advanced Methods
+
+    def offer_contract(startup, type, amount)
+        FundingRound.new(startup, self, type, amount)
+    end
+
+    def funding_rounds
+        FundingRound.all.each do |value|
+            value.venture_capitalist == self
+        end
+    end
+
+    def portfolio
+        starts = []
+        self.funding_rounds.each do |value|
+            starts << value.startup
+        end
+        starts.uniq
+    end
+
+    def biggest_investment
+        funding_rounds.select do |value|
+            value.max
+        end
+    end
+
+    def invested(domain)
+        dm = Startup.all.each do |value|
+            value.domain
+        end
+         total = FundingRound.all.each do |val|
+            val.investment == dm
+        end
+    end
+
+
+
 end
