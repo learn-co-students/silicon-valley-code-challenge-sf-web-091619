@@ -41,18 +41,36 @@ class VentureCapitalist
     end
 
     def biggest_investment
-        funding_rounds.select do |value|
-            value.max
+        biggest = funding_rounds[0]
+        funding_rounds.each do |value|
+            if value.investment > biggest.investment
+                biggest = value
+            end
         end
+        biggest
     end
 
+    # def invested(domain)
+    #     startups = []
+    #     Startup.all.each do |value|
+    #         if value.domain == domain
+    #             startups << value
+    #         end
+    #      total = FundingRound.all.map do |val|
+    #         if val.startup == startups
+
+
+    #     end
+    # end
+
     def invested(domain)
-        dm = Startup.all.each do |value|
-            value.domain
+        count = 0
+        funding_rounds.map do |value|
+            if value.startup.domain == domain
+                count += value.investment
+            end
         end
-         total = FundingRound.all.each do |val|
-            val.investment == dm
-        end
+        count
     end
 
 

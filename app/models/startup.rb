@@ -28,7 +28,7 @@ class Startup
     end
 
     def self.domains
-        @@all.each do |value|
+        @@all.map do |value|
             value.domain
         end
     end
