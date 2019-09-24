@@ -1,6 +1,6 @@
 class Startup
 
-    attr_accessor :name, :pivot
+    attr_accessor :name
     attr_reader :founder, :domain
 
     @@all = []
@@ -13,73 +13,60 @@ class Startup
     end
 
     def pivot(domain, name)
-        @name = name
         @domain = domain
+        @name = name
     end
 
     def self.all
         @@all
     end
 
-    def self.find_by_founder(founder)
-        @@all.select do |value|
-            value.founder == founder
+    def self.find_by_founder(founder_name)
+        @@all.select do |startup|
+            startup.founder == founder_name
         end
     end
 
     def self.domains
-        @@all.map do |value|
-            value.domain
+        @@all.map do |startup|
+            startup.domain
         end
     end
 
-    # Advanced Methods
-
-    def sign_contract(venture_capitalist, type, investment)
-        FundingRound.new(self, venture_capitalist, type, investment)
+    def sign_contract(ven_cap, type, inv,)
+        FundingRound.new(self, ven_cap, type, inv)
     end
 
     def num_funding_rounds
-        number = FundingRound.all.select do |value|
-            value.startup == self
-        end
-        number.count
+        rounds.count
     end
 
     def total_funds
-        count = 0
-        number = FundingRound.all.each do |value|
-            value.startup == self
-        end
-        inv = number.each do |value|
-            count += value.investment
-        end
-        count
+        rounds.sum do |fr|
+            fr.investment
     end
 
     def investors
-        ven = []
-        number = FundingRound.all.each do |value| # Iterate through all funding rounds
-            value.startup == self # Find funding rounds corresponding to the startup
-        end
-        number.select do |value| # Iterate through corresponding funding rounds
-            ven << value.venture_capitalist# Return array of unique venture capitalists
-        end
-        ven.uniq
+        rounds.map do |fr|
+            fr.venture_capitalist
+        end.uniq
     end
 
     def big_investors
-        big = []
-        three = VentureCapitalist.tres_commas_club
-        self.investors.each do |value|
-            three.each do |val2|
-                if value == val2
-                    big << value
-                end
-            end
-        end
-        big
+        investors.select do |inv|
+            VentureCapitalist.tres_commas_club.include?(inv)
+        end.uniq
     end
-    
+
+    #Helper Method
+
+    def rounds
+        FundingRound.all.select do |fr|
+            fr.startup == self
+        end
+    end
+
+
+
 
 end

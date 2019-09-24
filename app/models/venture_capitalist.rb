@@ -1,6 +1,6 @@
 class VentureCapitalist
-
-    attr_accessor :name, :total_worth
+    
+    attr_accessor :name, :totalq
 
     @@all = []
 
@@ -11,68 +11,45 @@ class VentureCapitalist
     end
 
     def self.all
-        @all
+        @@all
     end
 
     def self.tres_commas_club
-        @@all.select do |start_up|
-        start_up.total_worth >= 1000000000    
-        end 
+        @@all.select do |vc|
+            vc.total_worth > 1000000000
+        end
     end
 
-    # Advanced Methods
-
-    def offer_contract(startup, type, amount)
-        FundingRound.new(startup, self, type, amount)
+    def offer_contract(startup, type, inv)
+        FundingRound.new(startup, self, type, inv)
     end
 
     def funding_rounds
-        FundingRound.all.each do |value|
-            value.venture_capitalist == self
+        FundingRound.all.select do |fr|
+            fr.venture_capitalist == self
         end
     end
 
     def portfolio
-        starts = []
-        self.funding_rounds.each do |value|
-            starts << value.startup
-        end
-        starts.uniq
+        funding_rounds.map do |fr|
+            fr.startup
+        end.uniq
     end
 
     def biggest_investment
-        biggest = funding_rounds[0]
-        funding_rounds.each do |value|
-            if value.investment > biggest.investment
-                biggest = value
-            end
+        funding_rounds.max_by do |fr|
+            fr.investment
         end
-        biggest
     end
-
-    # def invested(domain)
-    #     startups = []
-    #     Startup.all.each do |value|
-    #         if value.domain == domain
-    #             startups << value
-    #         end
-    #      total = FundingRound.all.map do |val|
-    #         if val.startup == startups
-
-
-    #     end
-    # end
 
     def invested(domain)
-        count = 0
-        funding_rounds.map do |value|
-            if value.startup.domain == domain
-                count += value.investment
-            end
+        rounds = funding_rounds.select do |fr|
+            fr.startup.domain == domain
         end
-        count
+        rounds.sum do |fr|
+            fr.investment
+        end
     end
 
-
-
 end
+
